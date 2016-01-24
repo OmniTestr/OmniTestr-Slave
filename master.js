@@ -43,7 +43,39 @@ ws.on('message', function incoming(message) {
     }
 });
 
+//  {
+//      '404':200,
+//      '200':213,
+//       ...
+//  }
 var totalStatusCode = {};
+
+//{   'google.com/ahrep':
+//        {
+//            error: 0.134124,
+//            time: 132.122141
+//        },
+//    'google.com/kfljkdskafdjsal':
+//        {
+//            error: 0.134124,
+//            time: 132.122141
+//        }
+//}
 var resourceTable = {};
+
+
+//  {
+//      '404':200,
+//      '200':213,
+//       ...
+//  }
 var frequencyBin = {};
+
+
+//  {
+//      '5':23,
+//      '10':42,
+//      '15':42,
+//       ...
+//  }
 var reqPerTime = {};
