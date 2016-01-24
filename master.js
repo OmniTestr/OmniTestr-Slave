@@ -15,7 +15,7 @@ ws.on('message', function incoming(message) {
                 time: averageTime
             };
             //updates the master every 10 sec with status codes
-        } else if (data.time % 10 == 0 && data.codes && Object.keys(data.codes).length !== 0) {
+        } else if (data.time % 10 == 0 && data.codes) {
 
             if (frequencyBin[data.time]) {
                 for (code in data.codes) {

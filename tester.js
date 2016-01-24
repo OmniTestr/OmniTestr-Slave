@@ -1,6 +1,9 @@
 var request = require('request');
 var WebSocket = require('ws');
-var ws = new WebSocket('ws://localhost:4000');
+var ws = new WebSocket('ws://localhost:4080');
+
+var queue = [];
+var lock = false;
 
 var indiv = {
     resource: "",
@@ -24,8 +27,19 @@ ws.on('open', function open() {
 ws.on('message', function (data, flags) {
 
     console.log("message received");
+    queue.push(data);
+
+});
+
+
+while (true) {
+    var data;
+    if (queue.length > 0 && !lock) {
+        data = queue.shift();
+        lock = true;
+    }
+    
     if (data) {
-        console.log(data);
         data = JSON.parse(data);
         load = data['load'];
         for (k in data) {
@@ -43,9 +57,11 @@ ws.on('message', function (data, flags) {
             }
 
         };
+        resetIndiv();
+        lock = false;
     }
+}
 
-});
 
 
 
@@ -128,10 +144,10 @@ function timer() {
     setInterval(function () {
         var temp = tracker;
         tracker = 0;
-        //        ws.send(JSON.stringify({
-        //            time: counter += 5,
-        //            count: temp
-        //        }));
+                ws.send(JSON.stringify({
+                    time: counter += 5,
+                    count: temp
+                }));
     }, 5);
 }
 
