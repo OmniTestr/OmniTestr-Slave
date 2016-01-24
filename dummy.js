@@ -3,11 +3,11 @@ var WebSocketServer = require('ws').Server,
         port: 4000
     });
 var data = {
-    load: 100,
+    load: 500,
 
     "https://google.com": {
         "GET": [
-    "https://mail.google.com/mail/u/0/"
+    "https://www.google.com"
     ]
     }
 

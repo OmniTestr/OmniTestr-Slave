@@ -14,13 +14,15 @@ var first = true;
 var canEnd = false;
 //need to edit websocket address
 
-
+var statC = {};
+var tempC = {};
 ws.on('open', function open() {
     ws.send('something');
     console.log("connection established");
 });
 
 ws.on('message', function (data, flags) {
+
     console.log("message received");
     if (data) {
         console.log(data);
@@ -59,13 +61,17 @@ function callback(error, response, body) {
         handleIndiv(results);
         console.log("Reults");
         console.log(results);
+    } else {
+
     }
 };
+
 
 function handleIndiv(ret) {
     tracker++;
     if (first) {
         timer();
+        timer2();
         first = false;
     }
 
@@ -75,6 +81,16 @@ function handleIndiv(ret) {
         indiv.nFailed++;
     } else {
         indiv.nSuccess++;
+    }
+    if (statC[String(ret.status)]) {
+        statC[String(ret.status)]++;
+    } else {
+        statC[String(ret.status)] = 1;
+    }
+    if (tempC[String(ret.status)]) {
+        tempC[String(ret.status)]++;
+    } else {
+        tempC[String(ret.status)] = 1;
     }
     console.log("updated indiv");
     console.log(indiv);
@@ -87,7 +103,9 @@ function handleIndiv(ret) {
 }
 
 function sender() {
+    ws.send(JSON.stringify(statC));
     ws.send(JSON.stringify(indiv));
+    ws.send("DONE");
     ws.close();
     resetIndiv();
 
@@ -104,16 +122,30 @@ function resetIndiv() {
 }
 
 var counter = 0;
+var counterTen = 0;
 
 function timer() {
     setInterval(function () {
         var temp = tracker;
         tracker = 0;
-        ws.send(JSON.stringify({
-            time: counter += 5,
-            count: temp
-        }));
-
-
+        //        ws.send(JSON.stringify({
+        //            time: counter += 5,
+        //            count: temp
+        //        }));
     }, 5);
+}
+
+function timer2() {
+    setInterval(function () {
+        if (Object.keys(tempC).length === 0) {
+            sender();
+        } else {
+            var temp = tempC;
+            tempC = {};
+            ws.send(JSON.stringify({
+                time: counterTen += 10,
+                codes: temp
+            }));
+        }
+    }, 10000);
 }
