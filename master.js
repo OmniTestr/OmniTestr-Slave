@@ -27,28 +27,28 @@ ws.on('message', function incoming(message) {
                 }
             } else {
                 frequencyBin[data.time] = data.codes;
+            } else {
+                frequencyBin[data.time]
             }
-        } else {
-            frequencyBin[data.time]
         }
         //updates the counter histogram every 5 ms
-    } else if (data.time % 5 == 0 && data.count) {
-        var strTime = String(data.time);
-        if (reqPerTime[strTime]) {
-            reqPerTime[strTime] += data[count];
-        } else {
-            reqPerTime[strTime] = data[count];
-        }
-    } else {
-        for (code in data) {
-            if (totalStatusCode[code]) {
-                totalStatusCode[code] += data[code];
+        else if (data.time % 5 == 0 && data.count) {
+            var strTime = String(data.time);
+            if (reqPerTime[strTime]) {
+                reqPerTime[strTime] += data[count];
             } else {
-                totalStatusCode[code] = data[code];
+                reqPerTime[strTime] = data[count];
+            }
+        } else {
+            for (code in data) {
+                if (totalStatusCode[code]) {
+                    totalStatusCode[code] += data[code];
+                } else {
+                    totalStatusCode[code] = data[code];
+                }
             }
         }
     }
-}
 });
 
 //  {
