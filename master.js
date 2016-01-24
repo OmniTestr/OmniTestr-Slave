@@ -16,31 +16,39 @@ ws.on('message', function incoming(message) {
             };
             //updates the master every 10 sec with status codes
         } else if (data.time % 10 == 0 && data.codes && Object.keys(data.codes).length !== 0) {
-            for (code in data) {
-                if (frequencyBin[code]) {
-                    frequencyBin[code] += data[code];
-                } else {
-                    frequencyBin[code] = data[code];
+
+            if (frequencyBin[data.time]) {
+                for (code in data.codes) {
+                    if (frequencyBin[data.time].code) {
+                        frequencyBin[data.time].code += data.codes.code;
+                    } else {
+                        frequencyBin[data.time].code = data.codes.code;
+                    }
                 }
-            }
-            //updates the counter histogram every 5 ms
-        } else if (data.time % 5 == 0 && data.count) {
-            var strTime = String(data.time);
-            if (reqPerTime[strTime]) {
-                reqPerTime[strTime] += data[count];
             } else {
-                reqPerTime[strTime] = data[count];
+                frequencyBin[data.time] = data.codes;
             }
         } else {
-            for (code in data) {
-                if (totalStatusCode[code]) {
-                    totalStatusCode[code] += data[code];
-                } else {
-                    totalStatusCode[code] = data[code];
-                }
+            frequencyBin[data.time]
+        }
+        //updates the counter histogram every 5 ms
+    } else if (data.time % 5 == 0 && data.count) {
+        var strTime = String(data.time);
+        if (reqPerTime[strTime]) {
+            reqPerTime[strTime] += data[count];
+        } else {
+            reqPerTime[strTime] = data[count];
+        }
+    } else {
+        for (code in data) {
+            if (totalStatusCode[code]) {
+                totalStatusCode[code] += data[code];
+            } else {
+                totalStatusCode[code] = data[code];
             }
         }
     }
+}
 });
 
 //  {
